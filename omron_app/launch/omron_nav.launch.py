@@ -9,6 +9,7 @@ from launch_ros.actions import Node,SetRemap
 from launch.actions import GroupAction
 from launch_ros.actions import PushRosNamespace
 from nav2_common.launch import RewrittenYaml
+from launch.conditions import IfCondition
 
 
 def generate_launch_description():
@@ -23,6 +24,14 @@ def generate_launch_description():
         'log_level', default_value='info',
         description='log level'))
 
+    declared_arguments.append(
+            DeclareLaunchArgument(
+        'nav',
+        default_value='True',
+        description='Whether run nav too'))
+
+    nav                      = LaunchConfiguration('nav')
+
     omron_driver = Node(
             package='omron_ros2_agv',
             executable='omron_ros2_agv_node',
@@ -34,13 +43,13 @@ def generate_launch_description():
             package='pointcloud_to_laserscan', executable='pointcloud_to_laserscan_node',
             remappings={('cloud_in', 'omron/cloud_in'),('scan', 'omron/scan')},
             parameters=[{
-                'target_frame': 'map',
+                'target_frame': 'omron/base_link',
                 'transform_tolerance': 0.01,
                 'min_height': 0.0,
                 'max_height': 1.0,
                 'angle_min': -2.35,  # -M_PI/2
                 'angle_max':  2.35,  # M_PI/2
-                'angle_increment': 0.004,
+                'angle_increment': 0.007,
                 'scan_time': 0.1,
                 'range_min': 0.1,
                 'range_max': 24.0,
@@ -49,6 +58,19 @@ def generate_launch_description():
             }],
             name='pointcloud_to_laserscan'
         )
+
+    laser_throttle = Node(
+            package='topic_tools',
+            executable='throttle',
+            namespace='omron',
+            parameters=[{
+                'input_topic': 'scan',
+                'throttle_type': 'messages',
+                'msgs_per_sec': 2.0,
+                'output_topic': 'scan_rviz'
+            }],
+            arguments=['messages scan 2 scan_rviz'],
+            output='screen')
 
     nav_sw1_params = os.path.join(
             get_package_share_directory('omron_app'),
@@ -70,6 +92,7 @@ def generate_launch_description():
                     #    'velocity_smoother']
 
     load_nodes = GroupAction(
+        condition=IfCondition(nav),
         actions=[PushRosNamespace('omron'),
             Node(
                 package='nav2_controller',
@@ -143,6 +166,7 @@ def generate_launch_description():
     nodes_to_start = [
                 omron_driver,
                 pcl_to_ls,
+                laser_throttle,
                 TimerAction(
                 period=1.0,
                 actions=[load_nodes],
