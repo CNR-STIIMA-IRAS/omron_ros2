@@ -28,7 +28,7 @@ using namespace std::chrono_literals;
 class statusPub: public rclcpp::Node
 {
 public:
-  statusPub(ArClientBase *client, std::string name="Pose", std::string topic="/pose"); 
+  statusPub(std::string node_name, ArClientBase *client, std::string name="Pose", std::string topic="/pose"); 
   void pose_cb(ArNetPacket *packet);
   void dock_stats_cb(ArNetPacket *packet);
   void simplePoseCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg);
@@ -84,7 +84,7 @@ private:
 class laserPub: public rclcpp::Node
 {
 public:
-  laserPub(ArClientBase *client, std::string name="Laser_1Current", std::string topic="/laser"); 
+  laserPub(std::string node_name, ArClientBase *client, std::string name="Laser_1Current", std::string topic="/laser"); 
   void laser_cb(ArNetPacket *packet);
 
 protected:
@@ -100,7 +100,7 @@ protected:
 class mapPub: public rclcpp::Node
 {
 public:
-  mapPub(ArClientBase *client); 
+  mapPub(std::string node_name, ArClientBase *client); 
 
 
   geometry_msgs::msg::PoseStamped currentPose;

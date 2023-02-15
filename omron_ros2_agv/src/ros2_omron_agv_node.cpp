@@ -8,8 +8,8 @@ using namespace std::chrono_literals;
 
 
 
-statusPub::statusPub(ArClientBase *client, std::string name, std::string topic) : 
-      Node("statusPub"),
+statusPub::statusPub(std::string node_name, ArClientBase *client, std::string name, std::string topic) : 
+      Node(node_name),
       myClient(client), 
       myPoseCB(this, &statusPub::pose_cb),
       dockedStatusCB(this, &statusPub::dock_stats_cb)
@@ -48,7 +48,7 @@ statusPub::statusPub(ArClientBase *client, std::string name, std::string topic) 
 
   t.header.stamp = this->get_clock()->now();
   t.header.frame_id = "map";
-  t.child_frame_id  = "odom";
+  t.child_frame_id  = "/omron/odom";
 
   t.transform.translation.x = 0.0;
   t.transform.translation.y = 0.0;
@@ -83,8 +83,8 @@ void statusPub::pose_cb(ArNetPacket *packet)
 
   geometry_msgs::msg::TransformStamped transform;
   transform.header.stamp = this->get_clock()->now();
-  transform.header.frame_id = "odom";
-  transform.child_frame_id = "base_link";
+  transform.header.frame_id = "/omron/odom";
+  transform.child_frame_id = "/omron/base_link";
 
   transform.transform.translation.x = x/1000.0;
   transform.transform.translation.y = y/1000.0; 
@@ -100,7 +100,7 @@ void statusPub::pose_cb(ArNetPacket *packet)
 
   tf_broadcaster_->sendTransform(transform);
 
-  currentPose.header.frame_id = "base_link";
+  currentPose.header.frame_id = "/omron/base_link";
   currentPose.header.stamp = this->get_clock()->now();
   currentPose.pose.orientation.x = q.getX();
   currentPose.pose.orientation.y = q.getY();
@@ -119,8 +119,8 @@ void statusPub::pose_cb(ArNetPacket *packet)
   nav_msgs::msg::Odometry message_odom;
 
   message_odom.header.stamp =  this->get_clock()->now();
-  message_odom.child_frame_id  = "base_footprint";
-  message_odom.header.frame_id = "odom";
+  message_odom.child_frame_id  = "/omron/base_link";
+  message_odom.header.frame_id = "/omron/odom";
 
   message_odom.pose.pose.orientation.x = q.getX();
   message_odom.pose.pose.orientation.y = q.getY();
@@ -259,12 +259,12 @@ void statusPub::cmdVelWD(){
 
 //LASER
 
-laserPub::laserPub(ArClientBase *client, std::string name, std::string topic): 
-Node("laserPub"),
+laserPub::laserPub(std::string node_name, ArClientBase *client, std::string name, std::string topic): 
+Node(node_name),
 myClient(client), 
 myLaserCB(this, &laserPub::laser_cb)
 {
-  laser_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>(topic, 1);
+  laser_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>(topic, rclcpp::SensorDataQoS());
   myClient->addHandler(name.c_str(), &myLaserCB);
   myClient->request(name.c_str(), 100);
 
@@ -328,8 +328,8 @@ void laserPub::laser_cb(ArNetPacket *packet)
 
 //MAP
 
-mapPub::mapPub(ArClientBase *client) : 
-      Node("mapPub"),
+mapPub::mapPub(std::string node_name, ArClientBase *client) : 
+      Node(node_name),
       myClient(client), 
       getMapNameCB(this, &mapPub::handleGetMapName),
       getMapCB(this, &mapPub::handleGetMap)
@@ -527,14 +527,14 @@ int main(int argc, char **argv)
 
   rclcpp::executors::MultiThreadedExecutor executor;
 
-  auto nodeState    = std::make_shared<statusPub>(&client);
-  auto nodeLaser    = std::make_shared<laserPub>(&client, "Laser_1Current", "cloud_in");
-  auto nodeLaserLow = std::make_shared<laserPub>(&client, "Laser_2Current", "cloud_in_low");
-  auto nodeMap      = std::make_shared<mapPub>(&client);
+  auto nodeState    = std::make_shared<statusPub>("omron_agv_statusPub",&client);
+  auto nodeLaser    = std::make_shared<laserPub> ("omron_agv_laserPub",&client, "Laser_1Current", "cloud_in");
+  // auto nodeLaserLow = std::make_shared<laserPub> ("omron_agv_laserPub_low",&client, "Laser_2Current", "cloud_in_low");
+  auto nodeMap      = std::make_shared<mapPub>   ("omron_agv_mapPub",&client);
 
   executor.add_node(nodeState);
   executor.add_node(nodeLaser);
-  executor.add_node(nodeLaserLow);
+  // executor.add_node(nodeLaserLow);
   executor.add_node(nodeMap);
 
 

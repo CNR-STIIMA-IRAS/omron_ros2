@@ -1,4 +1,3 @@
-
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -6,7 +5,7 @@ from launch.actions import DeclareLaunchArgument, TimerAction
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
+from launch_ros.actions import Node,SetRemap
 from launch.actions import GroupAction
 from launch_ros.actions import PushRosNamespace
 from nav2_common.launch import RewrittenYaml
@@ -27,9 +26,29 @@ def generate_launch_description():
     omron_driver = Node(
             package='omron_ros2_agv',
             executable='omron_ros2_agv_node',
-            name='omron_ros2_agv_node',
             namespace='omron',
+            remappings= [('/omron/map', '/map'),('/omron/map_metadata','/map_metadata')],
             output='screen')
+
+    pcl_to_ls =    Node(
+            package='pointcloud_to_laserscan', executable='pointcloud_to_laserscan_node',
+            remappings={('cloud_in', 'omron/cloud_in'),('scan', 'omron/scan')},
+            parameters=[{
+                'target_frame': 'map',
+                'transform_tolerance': 0.01,
+                'min_height': 0.0,
+                'max_height': 1.0,
+                'angle_min': -2.35,  # -M_PI/2
+                'angle_max':  2.35,  # M_PI/2
+                'angle_increment': 0.004,
+                'scan_time': 0.1,
+                'range_min': 0.1,
+                'range_max': 24.0,
+                'use_inf': False,
+                'inf_epsilon': 1.0
+            }],
+            name='pointcloud_to_laserscan'
+        )
 
     nav_sw1_params = os.path.join(
             get_package_share_directory('omron_app'),
@@ -121,21 +140,11 @@ def generate_launch_description():
         ]
     )
 
-#     nav_sw1 = GroupAction(
-#         actions=[IncludeLaunchDescription(
-#                 PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('nav2_bringup'),"launch", 'navigation_launch.py')),
-#                 launch_arguments={'namespace': "omron",
-#                                 'use_sim_time': "true",
-#                                 'autostart': "true",
-#                                 'params_file': nav_sw1_params,
-#                                 'use_lifecycle_mgr': 'false',
-#                                 'log_level': 'info',
-#                                 'map_subscribe_transient_local': 'true'}.items())])
-
     nodes_to_start = [
                 omron_driver,
+                pcl_to_ls,
                 TimerAction(
-                period=2.0,
+                period=1.0,
                 actions=[load_nodes],
                 ),
                 ]

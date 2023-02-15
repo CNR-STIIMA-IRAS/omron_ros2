@@ -64,4 +64,9 @@ ament_export_dependencies(
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
 )
 
+install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
 ament_package()
