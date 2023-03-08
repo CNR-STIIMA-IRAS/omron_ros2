@@ -4,13 +4,13 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, TimerAction
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node,SetRemap
 from launch.actions import GroupAction
 from launch_ros.actions import PushRosNamespace
 from nav2_common.launch import RewrittenYaml
 from launch.conditions import IfCondition
-
+from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
@@ -163,10 +163,34 @@ def generate_launch_description():
         ]
     )
 
+    robot_description_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            PathJoinSubstitution([FindPackageShare("omron_app"), "urdf", "system.urdf.xacro"]),
+            " ","name:=","omron",
+            " ","ur_type:=","ur10",
+            " ","prefix:=","omron/",
+        ]
+    )
+
+    robot_description = {"robot_description": robot_description_content}
+
+
+    robot_state_publisher_node = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        namespace='omron',
+        output="screen",
+        # parameters=[robot_description,{"frame_prefix": 'omron'}],
+        parameters=[robot_description],
+    )
+
     nodes_to_start = [
                 omron_driver,
                 pcl_to_ls,
                 laser_throttle,
+                robot_state_publisher_node,
                 TimerAction(
                 period=1.0,
                 actions=[load_nodes],

@@ -1,0 +1,19 @@
+# MoveIt uses this configuration for controller management
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - tm12_controller
+
+  tm12_controller:
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints:
+      - omron/joint_1
+      - omron/joint_2
+      - omron/joint_3
+      - omron/joint_4
+      - omron/joint_5
+      - omron/joint_6

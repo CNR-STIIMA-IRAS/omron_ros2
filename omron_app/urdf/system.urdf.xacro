@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<robot name="tm12" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:arg name="ns" default="omron/" />
+  <xacro:arg name="prefix" default="omron/" />
+  <xacro:arg name="color" default="none" />
+  <xacro:arg name="trans_hw_iface" default="hardware_interface/PositionJointInterface" />
+
+  <xacro:include filename="$(find tm_description)/xacro/macro.gazebo.xacro" />
+  <xacro:include filename="$(find tm_description)/xacro/macro.transmission.xacro" />
+  <xacro:include filename="$(find tm_description)/xacro/macro.materials.xacro" />
+
+  <xacro:include filename="$(find omron_ros2_agv)/urdf/LD60.xacro" />
+
+
+  <!-- tm12 -->
+  <!-- If the user want to use newly generated named robot description file as user_defined.urdf.xacro, -->
+  <!-- you must modify 'macro.tm12-nominal.urdf.xacro' to 'user_defined.urdf.xacro'  -->
+  <xacro:include filename="$(find tm_description)/xacro/macro.tm12-nominal.urdf.xacro" />
+
+
+   <!-- -->
+  <xacro:tmr_gazebo ns="$(arg ns)" prefix="$(arg prefix)" />
+  <xacro:tmr_transmission prefix="$(arg prefix)" hw_iface="$(arg trans_hw_iface)" />
+  <xacro:tmr_materials/>
+
+  <!-- ros2 control include -->
+  <xacro:include filename="$(find tm_description)/xacro/tm12.ros2_control.xacro" />
+  <xacro:tm12_ros2_control name="tm12" prefix="$(arg prefix)" />
+
+  <!-- Arm -->
+  <xacro:property name="color" value="$(arg color)"/>
+  <xacro:if value="${color == 'none'}">
+    <xacro:tm12 ns="$(arg ns)" prefix="$(arg prefix)" />
+  </xacro:if>
+
+
+  <!-- Arm.color.stl -->
+  <xacro:unless value="${color == 'none'}">
+    <xacro:tm12 ns="$(arg ns)" prefix="$(arg prefix)" color="${color}" format="stl" />
+  </xacro:unless>
+
+
+  <xacro:property name="M_PI" value="3.14159"/>
+
+  <xacro:LD60  prefix="$(arg prefix)">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:LD60>
+
+  <link name="$(arg prefix)base_link"/>
+
+  <joint name="$(arg prefix)lifter" type="fixed">
+    <parent link="$(arg prefix)base_link"/>
+    <child link="$(arg prefix)base"/>
+    <origin xyz="0.2 -0.0 0.45" rpy=" 0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+</robot>

@@ -7,10 +7,11 @@ Panels:
         - /Global Options1
         - /Status1
         - /Map1/Topic1
-        - /LaserScan1
+        - /TF1
         - /LaserScan1/Topic1
-      Splitter Ratio: 0.5
-    Tree Height: 757
+        - /RobotModel1
+      Splitter Ratio: 0.48320895433425903
+    Tree Height: 739
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -138,31 +139,19 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        azrael/base:
-          Value: true
-        azrael/base_footprint:
-          Value: true
-        azrael/base_link:
-          Value: true
-        azrael/base_link_azrael:
-          Value: true
-        azrael/base_link_inertia:
-          Value: true
-        azrael/flange:
-          Value: true
-        azrael/ft_frame:
-          Value: true
-        azrael/laser:
-          Value: true
-        azrael/odom:
-          Value: true
-        azrael/tool0:
-          Value: true
-        azrael/wrist_3_link:
-          Value: true
         map:
           Value: true
+        omron/base:
+          Value: true
         omron/base_link:
+          Value: true
+        omron/base_link_omron:
+          Value: true
+        omron/flange:
+          Value: true
+        omron/link_0:
+          Value: true
+        omron/link_6:
           Value: true
         omron/odom:
           Value: true
@@ -173,19 +162,13 @@ Visualization Manager:
       Show Names: false
       Tree:
         map:
-          azrael/odom:
-            azrael/base_footprint:
-              azrael/base_link:
-                azrael/base:
-                  {}
-                azrael/base_link_inertia:
-                  {}
-              azrael/base_link_azrael:
-                azrael/laser:
-                  {}
           omron/odom:
             omron/base_link:
-              {}
+              omron/base:
+                omron/link_0:
+                  {}
+              omron/base_link_omron:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -222,6 +205,84 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Alpha: 1
+      Class: rviz_default_plugins/RobotModel
+      Collision Enabled: false
+      Description File: ""
+      Description Source: Topic
+      Description Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /omron/robot_description
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        omron/base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        omron/base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        omron/base_link_omron:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        omron/flange:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        omron/link_0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        omron/link_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        omron/link_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        omron/link_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        omron/link_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        omron/link_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        omron/link_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Mass Properties:
+        Inertia: false
+        Mass: false
+      Name: RobotModel
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -268,33 +329,33 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 18.375070571899414
+      Distance: 4.88520622253418
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.3475234508514404
-        Y: -2.390486478805542
-        Z: -0.14031538367271423
+        X: -0.33315202593803406
+        Y: -0.5307660698890686
+        Z: 0.3667655289173126
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 0.5497968792915344
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.890408515930176
+      Yaw: 4.315420627593994
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1041
+  Height: 1023
   Hide Left Dock: false
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd0000000400000000000001560000037efc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b0000037e000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010000000377fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b00000377000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000003bc00000037fc0100000002fb0000000800540069006d00650100000000000003bc0000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000002600000037e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000021f0000036cfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b0000036c000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010000000377fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b00000377000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000003bc00000037fc0100000002fb0000000800540069006d00650100000000000003bc0000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000001970000036c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -305,4 +366,4 @@ Window Geometry:
     collapsed: true
   Width: 956
   X: 960
-  Y: 18
+  Y: 36

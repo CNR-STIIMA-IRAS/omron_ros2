@@ -65,7 +65,7 @@ ament_export_dependencies(
 )
 
 install(
-  DIRECTORY launch
+  DIRECTORY launch mesh urdf
   DESTINATION share/${PROJECT_NAME}
 )
 

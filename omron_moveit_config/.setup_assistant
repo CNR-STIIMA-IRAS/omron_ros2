@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: omron_app
+    relative_path: urdf/system.urdf.xacro
+  srdf:
+    relative_path: config/tm12.srdf
+  package_settings:
+    author_name: stefano mutti
+    author_email: stefano.mutti@stiima.cnr.it
+    generated_timestamp: 1678278016
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

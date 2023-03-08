@@ -1,0 +1,9 @@
+# Default initial positions for tm12's ros2_control fake system
+
+initial_positions:
+  omron/joint_1: 0
+  omron/joint_2: 0
+  omron/joint_3: 0
+  omron/joint_4: 0
+  omron/joint_5: 0
+  omron/joint_6: 0
