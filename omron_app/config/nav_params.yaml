@@ -4,18 +4,19 @@ bt_navigator:
     global_frame: map
     robot_base_frame: omron/base_link
     odom_topic: /omron/odom
-    default_nav_to_pose_bt_xml: "/home/blanker/omron/src/nav2_cooperative/behavior_trees/cooperative.xml"
-    default_nav_through_poses_bt_xml: "/home/blanker/omron/src/nav2_cooperative/behavior_trees/navigate_through_poses_w_replanning_and_recovery.xml"
+    # default_nav_to_pose_bt_xml: "/home/blanker/omron/src/nav2_cooperative/behavior_trees/cooperative.xml"
+    # default_nav_through_poses_bt_xml: "/home/blanker/omron/src/nav2_cooperative/behavior_trees/navigate_through_poses_w_replanning_and_recovery.xml"
     bt_loop_duration: 10
     default_server_timeout: 20
-    navigators: ["navigate_cooperative", "navigate_through_poses"]
+    navigators: ["navigate_to_pose", "navigate_through_poses"]
     navigate_cooperative:
-      plugin: "nav2_cooperative/NavigateCooperative"
+      # plugin: "nav2_cooperative/NavigateCooperative"
+      plugin: "nav2_bt_navigator/NavigateToPoseNavigator"
     navigate_through_poses:
       plugin: "nav2_bt_navigator/NavigateThroughPosesNavigator"
     plugin_lib_names:
       - nav2_compute_path_to_pose_action_bt_node
-      - nav2_cooperative_navigator
+      # - nav2_cooperative_navigator
       - nav2_compute_path_through_poses_action_bt_node
       - nav2_smooth_path_action_bt_node
       - nav2_follow_path_action_bt_node
@@ -101,14 +102,14 @@ controller_server:
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
-      min_vel_x: 0.0
+      min_vel_x: -0.5
       min_vel_y: 0.0
       max_vel_x: 0.3
       max_vel_y: 0.0
       max_vel_theta: 0.5
-      min_speed_xy:  0.0
+      min_speed_xy:  -0.5
       max_speed_xy:  0.3
-      min_speed_theta: 0.0
+      min_speed_theta: -0.5
       acc_lim_x: 1.0
       acc_lim_y: 0.0
       acc_lim_theta: 0.5
